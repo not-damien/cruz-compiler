@@ -6,7 +6,9 @@ enum Token{
     Tlet,
     Tadd,
     Tint,
-    Tsemi
+    Tsemi,
+    Tindent,
+    Tassign
 }
 
 
@@ -84,19 +86,24 @@ fn parse (str: &String)-> Vec<Token>{
     loop{
         match e.next() {
             Some(v) => {
-                if v != ' ' && v != '\n'{
+                if v != ' ' && v != '\n' &&v != ';'{
                     buff.push(v);
-                    
                 }else{
-                    println!("|{}|",buff);
+                   println!("|{}|",buff);
+                    
                     if buff == "let"{
                         res.push(Token::Tlet)
                     }else if buff == "+" {
                         res.push(Token::Tadd);
-                    }else if buff == ";" {
-                        res.push(Token::Tsemi);
                     }else if buff.parse::<u32>().is_ok() {
                         res.push(Token::Tint);
+                    }else if buff == "="{
+                        res.push(Token::Tassign)
+                    }else if buff!="" && buff.chars().nth(0).unwrap().is_alphabetic() {
+                        res.push(Token::Tindent)
+                    }
+                    if v == ';'{
+                        res.push(Token::Tsemi)
                     }
                     buff.clear();
                     continue
